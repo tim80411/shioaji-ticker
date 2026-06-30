@@ -80,6 +80,7 @@ def write_state(tick):
         "low": float(tick.low),
         "vol": int(tick.total_volume),
         "history": list(_history),
+        "sim": SIMULATION,                    # 模擬模式旗標（plugin 用來顯示模擬 tag）
     }
     tmp = STATE_FILE + ".tmp"
     with open(tmp, "w") as f:

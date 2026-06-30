@@ -30,9 +30,10 @@ jq -r --arg spark "$SPARK" --argjson stale "$STALEF" '
   (if $stale==1 then "#888888"
    elif .chg==null then "white"
    elif .chg>=0 then "red" else "green" end) as $c |
-  if $stale==1 then "TXF \(.price|floor) 休市 | color=\($c)"
-  elif .chg==null then "TXF \(.price|floor) \($spark)"
-  else "TXF \(.price|floor) \($a)\(.pct|fabs)% \($spark) | color=\($c)" end' "$STATE"
+  (if .sim then " 🧪模擬" else "" end) as $sim |
+  if $stale==1 then "TXF \(.price|floor) 休市\($sim) | color=\($c)"
+  elif .chg==null then "TXF \(.price|floor) \($spark)\($sim)"
+  else "TXF \(.price|floor) \($a)\(.pct|fabs)% \($spark)\($sim) | color=\($c)" end' "$STATE"
 
 # 下拉選單
 echo "---"
@@ -40,6 +41,6 @@ jq -r '
   "台指近月連續 TXFR1 | font=Menlo",
   (if .underlying then "加權現貨 \(.underlying|floor)  (期現對照) | font=Menlo" else empty end),
   (if .open then "開\(.open|floor) 高\(.high|floor) 低\(.low|floor) 量\(.vol) | font=Menlo" else empty end),
-  "更新 \(.ts)  ｜ 永豐 Shioaji | font=Menlo"' "$STATE"
+  "更新 \(.ts)  ｜ 永豐 Shioaji\(if .sim then "（模擬）" else "" end) | font=Menlo"' "$STATE"
 [ "$STALEF" = 1 ] && echo "⚠️ 已 ${AGE}s 未更新（休市/空檔） | color=#888888 font=Menlo"
 echo "重新整理 | refresh=true"
