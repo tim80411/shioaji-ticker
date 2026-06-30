@@ -1,0 +1,14 @@
+# Python venv
+.venv/
+__pycache__/
+*.pyc
+
+# 執行期產物
+*.log
+latest.json
+
+# 生成的 launchd plist（由 install.sh 從 templates/*.tmpl 產生；含絕對路徑，不進版控）
+*.plist
+
+# macOS
+.DS_Store
