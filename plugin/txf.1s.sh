@@ -25,18 +25,19 @@ SPARK=$(jq -r '
   end' "$STATE")
 
 # 主行（menu bar）
-jq -r --arg spark "$SPARK" --argjson stale "$STALEF" '
+jq -r --argjson stale "$STALEF" '
   (if .chg==null then "" elif .chg>=0 then "▲" else "▼" end) as $a |
   (if $stale==1 then "#888888"
    elif .chg==null then "white"
    elif .chg>=0 then "red" else "green" end) as $c |
   (if .sim then " 🧪模擬" else "" end) as $sim |
   if $stale==1 then "TXF \(.price|floor) 休市\($sim) | color=\($c)"
-  elif .chg==null then "TXF \(.price|floor) \($spark)\($sim)"
-  else "TXF \(.price|floor) \($a)\(.pct|fabs)% \($spark)\($sim) | color=\($c)" end' "$STATE"
+  elif .chg==null then "TXF \(.price|floor)\($sim)"
+  else "TXF \(.price|floor) \($a)\(.pct|fabs)%\($sim) | color=\($c)" end' "$STATE"
 
 # 下拉選單
 echo "---"
+[ -n "$SPARK" ] && echo "走勢 $SPARK  (近 2 分鐘) | font=Menlo"
 jq -r '
   "台指近月連續 TXFR1 | font=Menlo",
   (if .underlying then "加權現貨 \(.underlying|floor)  (期現對照) | font=Menlo" else empty end),
