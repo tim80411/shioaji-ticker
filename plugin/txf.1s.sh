@@ -44,3 +44,4 @@ jq -r '
   "更新 \(.ts)  ｜ 永豐 Shioaji\(if .sim then "（模擬）" else "" end) | font=Menlo"' "$STATE"
 [ "$STALEF" = 1 ] && echo "⚠️ 已 ${AGE}s 未更新（休市/空檔） | color=#888888 font=Menlo"
 echo "重新整理 | refresh=true"
+echo "🔄 重新連線 (重啟 daemon) | bash=/bin/launchctl param1=kickstart param2=-k param3=gui/$(id -u)/com.local.shioaji-ticker terminal=false refresh=true"

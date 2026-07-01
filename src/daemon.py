@@ -94,6 +94,15 @@ def on_tick(exchange, tick):
     write_state(tick)
 
 
+def _on_session_down(*_):
+    # 連線中斷 → 結束行程，交給 launchd(KeepAlive) 重啟重新登入訂閱。
+    # 行程若不死，KeepAlive 不會救 → 會像先前那樣靜默停擺，故必須主動退出。
+    print("[reconnect] 偵測到 session down → 結束行程讓 launchd 重啟重連", flush=True)
+    os._exit(1)
+
+
+api.set_session_down_callback(_on_session_down)
+
 api.subscribe(contract, quote_type=sj.QuoteType.Tick, version=sj.QuoteVersion.v1)
 print("[ok] 已訂閱 TXFR1，開始推送…(Ctrl-C 結束)")
 
